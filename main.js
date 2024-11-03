@@ -6,7 +6,7 @@ function loadInventory() {
 
   inventory.forEach((item, index) => {
     let li = document.createElement("li");
-    li.innerHTML = `Number: ${item.number}, Name: ${item.name} <button onclick="deleteItem(${index})">Delete</button>`;
+    li.innerHTML = `Number: ${item.number}, Name: ${item.name}, Added: ${item.timestamp} <button onclick="deleteItem(${index})">Delete</button>`;
     inventoryList.appendChild(li);
   });
 }
@@ -49,7 +49,8 @@ function deleteItem(index) {
   inventory.splice(index, 1); //elimina el item en el index especificado
   localStorage.setItem("inventory", JSON.stringify(inventory));
 
-  Swal.fire("Deleted!", "Item has been removed.", "success");
+  console.log("Item removed.");
+
   loadInventory();
 }
 
