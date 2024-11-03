@@ -4,9 +4,9 @@ function loadInventory() {
   let inventoryList = document.querySelector("#inventoryList");
   inventoryList.innerHTML = ""; //evita que se los items agregados anteriormente se vuelvan a repetir al ingresar un nuevo item
 
-  inventory.forEach((item) => {
+  inventory.forEach((item, index) => {
     let li = document.createElement("li");
-    li.textContent = `Number: ${item.number}, Name: ${item.name}`;
+    li.innerHTML = `Number: ${item.number}, Name: ${item.name} <button onclick="deleteItem(${index})">Delete</button>`;
     inventoryList.appendChild(li);
   });
 }
@@ -19,16 +19,21 @@ function addItem() {
 
   //validacion de entrada
   if (!itemNumber || !itemName) {
-    messageDiv.textContent = "Please, complete both boxes";
+    Swal.fire("Error", "Please, complete both boxes", "error");
     return;
   }
 
   let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-  inventory.push({ number: itemNumber, name: itemName });
+  let DateTime = luxon.DateTime; //uso de Luxon para añadir fecha y hora
+  let timestamp = DateTime.now().toLocaleString(DateTime.DATETIME_MED);
+
+  inventory.push({ number: itemNumber, name: itemName, timestamp: timestamp });
   localStorage.setItem("inventory", JSON.stringify(inventory));
 
-  //mensaje en consola
-  console.log(`Item added: Number: ${itemNumber}, Name: ${itemName}`);
+  //mensaje en console
+  console.log(
+    `Item added: Number: ${itemNumber}, Name: ${itemName}, Timestamp: ${timestamp}`
+  );
 
   messageDiv.textContent = "Item added successfully.";
   loadInventory();
@@ -36,6 +41,16 @@ function addItem() {
   //limpiar las cajas
   document.querySelector("#itemNumber").value = "";
   document.querySelector("#itemName").value = "";
+}
+
+//funcion para eliminar los item del inventario
+function deleteItem(index) {
+  let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+  inventory.splice(index, 1); //elimina el item en el index especificado
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+
+  Swal.fire("Deleted!", "Item has been removed.", "success");
+  loadInventory();
 }
 
 //evento para el boton
