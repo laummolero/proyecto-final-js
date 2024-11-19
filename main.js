@@ -22,25 +22,25 @@ function addItem() {
     Swal.fire("Error", "Please, complete both boxes", "error");
     return;
   }
+
+  let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+  let DateTime = luxon.DateTime; //uso de Luxon para añadir fecha y hora
+  let timestamp = DateTime.now().toLocaleString(DateTime.DATETIME_MED);
+
+  inventory.push({ number: itemNumber, name: itemName, timestamp: timestamp });
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+
+  //mensaje en console
+  console.log(
+    `Item added: Number: ${itemNumber}, Name: ${itemName}, Timestamp: ${timestamp}`
+  );
+  messageDiv.textContent = "Item added successfully.";
+  loadInventory();
+
+  //limpiar las cajas
+  document.querySelector("#itemNumber").value = "";
+  document.querySelector("#itemName").value = "";
 }
-
-let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
-let DateTime = luxon.DateTime; //uso de Luxon para añadir fecha y hora
-let timestamp = DateTime.now().toLocaleString(DateTime.DATETIME_MED);
-
-inventory.push({ number: itemNumber, name: itemName, timestamp: timestamp });
-localStorage.setItem("inventory", JSON.stringify(inventory));
-
-//mensaje en console
-console.log(
-  `Item added: Number: ${itemNumber}, Name: ${itemName}, Timestamp: ${timestamp}`
-);
-messageDiv.textContent = "Item added successfully.";
-loadInventory();
-
-//limpiar las cajas
-document.querySelector("#itemNumber").value = "";
-document.querySelector("#itemName").value = "";
 
 //funcion para eliminar los item del inventario
 function deleteItem(index) {
