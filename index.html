@@ -15,6 +15,12 @@
       <button id="addItemButton">Add Item</button>
       <div id="message"></div>
       <h2>Inventory</h2>
+      <input
+        type="text"
+        id="searchBox"
+        placeholder="Search by item name"
+        oninput="searchItems()"
+      />
       <div>
         <button id="sortByNumber">Sort by Number</button>
         <button id="sortByName">Sort by Name</button>

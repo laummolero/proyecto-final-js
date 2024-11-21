@@ -4,7 +4,12 @@ function loadInventory() {
   let inventoryList = document.querySelector("#inventoryList");
   inventoryList.innerHTML = ""; //evita que se los items agregados anteriormente se vuelvan a repetir al ingresar un nuevo item
 
-  inventory.forEach((item, index) => {
+  let searchQuery = document.querySelector("#searchBox").value.toLowerCase();
+  let filteredInventory = inventory.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery)
+  );
+
+  filteredInventory.forEach((item, index) => {
     let timestamp = Number(item.timestamp);
 
     let row = document.createElement("tr");
@@ -110,6 +115,10 @@ function sortBy(attribute) {
   loadInventory();
 }
 
+function searchItems() {
+  loadInventory();
+}
+
 //evento para el boton de añadir
 document.querySelector("#addItemButton").addEventListener("click", addItem);
 
@@ -128,4 +137,12 @@ document
   .addEventListener("click", () => sortBy("timestamp"));
 
 //cargar el inventario al iniciar la pagina
-document.addEventListener("DOMContentLoaded", loadInventory);
+document.addEventListener("DOMContentLoaded", () => {
+  loadInventory();
+  let searchBox = document.querySelector("#searchBox");
+  if (searchBox) {
+    searchBox.addEventListener("input", searchItems);
+  } else {
+    console.error("Seach box not found.");
+  }
+});
