@@ -15,7 +15,25 @@
       <button id="addItemButton">Add Item</button>
       <div id="message"></div>
       <h2>Inventory</h2>
-      <ul id="inventoryList"></ul>
+      <div>
+        <button id="sortByNumber">Sort by Number</button>
+        <button id="sortByName">Sort by Name</button>
+        <button id="sortByPrice">Sort by Price</button>
+        <button id="sortByDate">Sort by Date Added</button>
+      </div>
+      <table id="inventoryTable">
+        <thead>
+          <tr>
+            <th>Item Number</th>
+            <th>Item Name</th>
+            <th>Item Price</th>
+            <th>Time Added</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryList">
+          <!-- Aca se añaden los items -->
+        </tbody>
+      </table>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon@3.5.0/build/global/luxon.min.js"></script>

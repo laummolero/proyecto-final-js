@@ -5,9 +5,19 @@ function loadInventory() {
   inventoryList.innerHTML = ""; //evita que se los items agregados anteriormente se vuelvan a repetir al ingresar un nuevo item
 
   inventory.forEach((item, index) => {
-    let li = document.createElement("li");
-    li.innerHTML = `Number: ${item.number}, Name: ${item.name}, Price: ${item.price}, Added: ${item.timestamp} <button onclick="deleteItem(${index})">Delete</button>`;
-    inventoryList.appendChild(li);
+    let timestamp = Number(item.timestamp);
+
+    let row = document.createElement("tr");
+    row.innerHTML = `
+    <td>${item.number}</td>
+    <td>${item.name}</td>
+    <td>${item.price}</td>
+    <td>${luxon.DateTime.fromMillis(Number(item.timestamp)).toLocaleString(
+      luxon.DateTime.DATETIME_MED
+    )}</td>
+    <td><button onclick="deleteItem(${index})">Delete</button></td>
+    `;
+    inventoryList.appendChild(row);
   });
 }
 
@@ -35,7 +45,7 @@ function addItem() {
     return;
   }
   let DateTime = luxon.DateTime; //uso de Luxon para añadir fecha y hora
-  let timestamp = DateTime.now().toLocaleString(DateTime.DATETIME_MED);
+  let timestamp = DateTime.now().toMillis();
 
   inventory.push({
     number: itemNumber,
@@ -47,7 +57,9 @@ function addItem() {
 
   //mensaje en console
   console.log(
-    `Item added: Number: ${itemNumber}, Name: ${itemName}, Price: ${itemPrice}, Timestamp: ${timestamp}`
+    `Item added: Number: ${itemNumber}, Name: ${itemName}, Price: ${itemPrice}, Timestamp: ${luxon.DateTime.fromMillis(
+      timestamp
+    ).toLocaleString(luxon.DateTime.DATETIME_MED)}`
   );
   messageDiv.textContent = "Item added successfully.";
   loadInventory();
@@ -69,8 +81,51 @@ function deleteItem(index) {
   loadInventory();
 }
 
-//evento para el boton
+//funcion para ordenar los items del inventario
+function sortBy(attribute) {
+  console.log("Sorting by: " + attribute); //debugging
+
+  let inventory = JSON.parse(localStorage.getItem("inventory")) || [];
+
+  inventory.sort((a, b) => {
+    //ordena por numero
+    if (attribute === "number") {
+      return a.number - b.number;
+    }
+    //ordena por nombre
+    if (attribute === "name") {
+      return a.name.localeCompare(b.name);
+    }
+    //ordena por precio
+    if (attribute === "price") {
+      return parseFloat(a.price) - parseFloat(b.price);
+    }
+    //ordena por fecha
+    if (attribute === "timestamp") {
+      return a.timestamp - b.timestamp;
+    }
+    return 0; //si ningun attributo concuerda
+  });
+  localStorage.setItem("inventory", JSON.stringify(inventory)); //actualiza la tabla con los items ordenados
+  loadInventory();
+}
+
+//evento para el boton de añadir
 document.querySelector("#addItemButton").addEventListener("click", addItem);
 
+//evento para los botones de sorting
+document
+  .querySelector("#sortByNumber")
+  .addEventListener("click", () => sortBy("number"));
+document
+  .querySelector("#sortByName")
+  .addEventListener("click", () => sortBy("name"));
+document
+  .querySelector("#sortByPrice")
+  .addEventListener("click", () => sortBy("price"));
+document
+  .querySelector("#sortByDate")
+  .addEventListener("click", () => sortBy("timestamp"));
+
 //cargar el inventario al iniciar la pagina
-loadInventory();
+document.addEventListener("DOMContentLoaded", loadInventory);
